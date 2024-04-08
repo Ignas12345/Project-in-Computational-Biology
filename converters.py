@@ -2,7 +2,7 @@ import torch
 from torchvision.transforms import v2
 
 def image_to_tensor(image):
-  tensor = v2.ToTensor()(image)
+  tensor = v2.Compose([v2.ToImage(), v2.ToDtype(torch.float32, scale=True)])(image)
   return tensor.unsqueeze(0)
 
 def tensor_to_image(tensor):
