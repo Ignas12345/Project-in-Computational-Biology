@@ -2,7 +2,8 @@ import torch
 from torchvision.transforms import v2
 
 def image_to_tensor(image):
-  tensor = v2.Compose([v2.ToImage(), v2.ToDtype(torch.float32, scale=True), v2.Normalize((0.5), (0.5))])(image)
+  tensor = v2.PILToTensor()(image)
+  tensor = v2.Normalize([0.5], [0.5])(tensor)
   return tensor.unsqueeze(0)
 
 def tensor_to_image(tensor):
@@ -11,4 +12,13 @@ def tensor_to_image(tensor):
 
 def turn_to_grayscale(image):
   return v2.Grayscale()(image)
+  
+def generate_noise(image, upscaling_factor, mean = 0, std_dev = 0.2):
+  img_size = np.array(image).shape
+  # next line taken from : https://stackoverflow.com/questions/1781970/multiplying-a-tuple-by-a-scalar
+  img_size = tuple(i * upscaling_factor for i in img_size)
+  noise = np.random.normal(mean, std_dev, img_size)
+  noise = (noise-np.min(noise))/(np.max(noise)-np.min(noise))
+  return Image.fromarray(noise)
+
   
